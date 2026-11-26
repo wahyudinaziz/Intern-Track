@@ -20,7 +20,8 @@
   - **2026-11-27:** Layout `index.php` ditukar kepada **mobile-first** atas arahan terus pengguna (grid col-12→col-sm-6→col-lg-4, saiz hero h1 responsif via media query min-width, `body{min-width:960px}` dibuang). **Nota percanggahan:** spesifikasi Addendum V2-C menetapkan "Desktop-first web view" — keputusan mobile-first ini mengatasi spesifikasi atas arahan eksplisit pengguna, bukan salah faham. Jika modul lain (dashboard, jadual) dibina kemudian, sahkan dengan pengguna sama ada semuanya perlu mobile-first atau hanya landing page ini.
   - **2026-11-27:** Keseluruhan teks UI dalam `index.php` ditukar kepada **Bahasa Inggeris profesional** atas arahan pengguna (`lang="ms"` → `lang="en"`, tajuk/deskripsi 10 modul, teks hero, status alert, footer). Komen kod PHP (bukan UI) dikekalkan dalam Bahasa Melayu. **Keputusan seni bina:** semua UI teks tetap (modul, dashboard, borang) pada projek ini mesti ditulis dalam Bahasa Inggeris mulai sekarang — rujuk keputusan ini untuk sesi akan datang supaya konsisten.
   - **2026-11-27:** Tambah `LICENSE` (MIT, copyright Wahyudin Aziz), `.env.example` (APP_NAME/ENV/URL/HOST/PORT, DB_*, ANTHROPIC_API_KEY, AI_FEATURE_ENABLED, CGPA_SCALE_DEFAULT — serasi dengan parser `env_load()` dalam `index.php`), dan `README.md` (vision, 10 modul, tech stack, seksyen "Follow This Project — Built Live on TikTok" dengan jadual episod, roadmap versi v0.1.0→v1.0.0, lesen). **Nota:** pautan profil TikTok di README masih placeholder `<TODO: add TikTok profile URL>` — pengguna perlu isi URL sebenar sendiri (tidak direka).
-- **Milestone semasa:** Belum bermula secara rasmi (sebelum `v0.1.0`) — `index.php` ini baru placeholder/shell, bukan modul berfungsi.
+  - **2026-11-27:** Database MySQL `interntrack` dicipta di localhost (XAMPP, host `127.0.0.1`, user `root`, tiada kata laluan — padan `.env.example`). `database/schema.sql` ditulis & di-import; 12 jadual disahkan wujud via `SHOW TABLES`: `students`, `student_subjects`, `student_academic_projects`, `student_skills`, `student_preferences`, `companies`, `opportunities`, `opportunity_required_skills`, `matches` (7 lajur skor + label + status CGPA), `applications`, `application_timeline`, `reminders`. Semua guna InnoDB + utf8mb4 + foreign key. **Belum ada:** `database/seed_demo.sql` (profil dummy UiTM), `config/app.php`/PDO connector untuk aplikasi guna DB ini.
+- **Milestone semasa:** Belum bermula secara rasmi (sebelum `v0.1.0`) — `index.php` ini baru placeholder/shell, bukan modul berfungsi. Database sudah wujud tapi belum disambung ke mana-mana kod PHP.
 
 ## 2. Tugasan Selesai
 
@@ -29,18 +30,19 @@
 - [x] Cipta `index.php` — landing page/entry point awal, anti-hardcode port/.env, senarai 10 modul.
 - [x] `git init` + `.gitignore` asas (`.env`, `/vendor/`, `/storage/logs/`, `/storage/cache/`, `/uploads/`) + commit pertama + push ke `https://github.com/wahyudinaziz/Intern-Track.git` (branch `main`).
 - [x] `LICENSE` (MIT) + `.env.example` + `README.md` (termasuk seksyen Built Live on TikTok & roadmap versi).
+- [x] `database/schema.sql` ditulis & diimport → database `interntrack` wujud di MySQL localhost dengan 12 jadual (lihat Status Semasa).
 
 ## 3. Tugasan Sedang Berjalan
 
-- Tiada. Commit `b023a7e` ("docs: add MIT LICENSE, .env.example and README") sudah di-push ke `main`.
+- Tiada. Database sudah dicipta & disahkan (`SHOW TABLES`). Belum di-commit ke git lagi — sahkan `git status` pada sesi akan datang sebelum anggap selesai sepenuhnya.
 
 ## 4. Tugasan Belum Dilaksanakan (mengikut Addendum V3 Seksyen G — tugasan pertama)
 
 - [ ] `INSTALL.md` rangka awal, `CHANGELOG.md`.
 - [ ] Isi placeholder pautan TikTok di `README.md`.
-- [ ] `config/app.php` — baca `APP_URL`, `APP_PORT`, `DB_*` daripada `.env` (anti-hardcode port).
-- [ ] Struktur folder penuh mengikut Seksyen 12 spesifikasi (`app/`, `database/`, `data/`, `public/`, `uploads/`, `views/`, `api/`, `storage/`, `docs/`).
-- [ ] `database/schema.sql` + `database/seed_demo.sql` (termasuk 8–12 profil dummy pelajar perempuan UiTM).
+- [ ] `config/app.php` — baca `APP_URL`, `APP_PORT`, `DB_*` daripada `.env` (anti-hardcode port) + sediakan PDO connector supaya `index.php`/modul lain boleh guna DB `interntrack`.
+- [ ] Struktur folder penuh mengikut Seksyen 12 spesifikasi (`app/`, `data/`, `public/`, `uploads/`, `views/`, `api/`, `storage/`, `docs/`).
+- [ ] `database/seed_demo.sql` (8–12 profil dummy pelajar perempuan UiTM + syarikat/opportunity demo).
 - [ ] Modul teras (10 modul, Seksyen 10) — belum bermula satu pun.
 - [ ] Taxonomy JSON files (`data/*.json`).
 
