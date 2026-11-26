@@ -3,44 +3,15 @@ declare(strict_types=1);
 
 /**
  * InternTrack — Entry Point (Project Shell)
- * Anti-hardcode: port/base URL dibaca dari .env jika wujud, jika tidak
- * dikira secara automatik daripada HTTP_HOST + SCRIPT_NAME (spec Addendum V3-C).
+ * Config (incl. .env, anti-hardcode port/URL per Addendum V3-C) lives in config/app.php.
  */
 
-function env_load(string $path): array
-{
-    if (!is_file($path)) {
-        return [];
-    }
-    $values = [];
-    foreach (file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-        $line = trim($line);
-        if ($line === '' || str_starts_with($line, '#') || !str_contains($line, '=')) {
-            continue;
-        }
-        [$key, $value] = explode('=', $line, 2);
-        $values[trim($key)] = trim($value, " \t\"'");
-    }
-    return $values;
-}
+$config = require __DIR__ . '/config/app.php';
 
-$env = env_load(__DIR__ . '/.env');
-
-$scheme  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$host    = $env['APP_HOST'] ?? ($_SERVER['HTTP_HOST'] ?? 'localhost');
-$appPort = $env['APP_PORT'] ?? null;
-$basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
-
-if (!empty($env['APP_URL'])) {
-    $appUrl = rtrim($env['APP_URL'], '/');
-} else {
-    $hostOnly = explode(':', $host)[0];
-    $appUrl = $scheme . '://' . $hostOnly . ($appPort ? ':' . $appPort : '') . $basePath;
-}
-
-$appName    = $env['APP_NAME'] ?? 'InternTrack';
+$appUrl     = $config['app']['url'];
+$appName    = $config['app']['name'];
+$appEnv     = $config['app']['env'];
 $appVersion = 'v0.1.0 — Project Shell';
-$appEnv     = $env['APP_ENV'] ?? 'local';
 
 $modules = [
     ['icon' => 'user-round',       'title' => 'Student Profile',       'desc' => 'Academic profile, skills & preferences with photo upload.'],
