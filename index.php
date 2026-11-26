@@ -6,7 +6,14 @@ declare(strict_types=1);
  * Config (incl. .env, anti-hardcode port/URL per Addendum V3-C) lives in config/app.php.
  */
 
+session_start();
+
 $config = require __DIR__ . '/config/app.php';
+
+if (empty($_SESSION['is_authenticated'])) {
+    header('Location: ' . $config['app']['base_path'] . '/login.php');
+    exit;
+}
 
 $appUrl     = $config['app']['url'];
 $appName    = $config['app']['name'];
@@ -96,7 +103,11 @@ $modules = [
     <a class="navbar-brand fw-semibold mb-0" href="<?= htmlspecialchars($appUrl) ?>/">
       <strong><?= htmlspecialchars($appName) ?></strong>
     </a>
-    <span class="badge rounded-pill text-bg-light border"><?= htmlspecialchars($appVersion) ?></span>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge rounded-pill text-bg-light border"><?= htmlspecialchars($appVersion) ?></span>
+      <span class="text-muted small d-none d-sm-inline">Signed in as <strong><?= htmlspecialchars($_SESSION['username'] ?? '') ?></strong></span>
+      <a href="<?= htmlspecialchars($appUrl) ?>/logout.php" class="btn btn-sm btn-outline-secondary">Log Out</a>
+    </div>
   </div>
 </nav>
 

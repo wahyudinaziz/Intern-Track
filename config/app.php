@@ -64,4 +64,8 @@ return [
     'academic' => [
         'cgpa_scale_default' => (float) ($env['CGPA_SCALE_DEFAULT'] ?? 4.00),
     ],
+    'auth' => [
+        'admin_username' => $env['ADMIN_USERNAME'] ?? 'admin',
+        'admin_password' => $env['ADMIN_PASSWORD'] ?? 'admin',
+    ],
 ];

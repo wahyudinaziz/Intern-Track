@@ -23,7 +23,8 @@
   - **2026-11-27:** Database MySQL `interntrack` dicipta di localhost (XAMPP, host `127.0.0.1`, user `root`, tiada kata laluan — padan `.env.example`). `database/schema.sql` ditulis & di-import; 12 jadual disahkan wujud via `SHOW TABLES`: `students`, `student_subjects`, `student_academic_projects`, `student_skills`, `student_preferences`, `companies`, `opportunities`, `opportunity_required_skills`, `matches` (7 lajur skor + label + status CGPA), `applications`, `application_timeline`, `reminders`. Semua guna InnoDB + utf8mb4 + foreign key.
   - **2026-11-27:** `database/seed_demo.sql` ditulis & diimport — 8 profil dummy pelajar perempuan Melayu UiTM (Nur Aisyah Balqis, Siti Nur Damia, Nur Izzati Hanim, Nurul Syafiqah, Farah Nabilah, Aina Sofea, Nur Athirah, Maisarah Irdina) merentasi 8 kampus UiTM berbeza (Shah Alam, Pahang/Jengka, Perlis/Arau, Melaka/Alor Gajah, Terengganu/Dungun, Kelantan/Machang, Johor/Segamat, Sarawak/Samarahan), pelbagai fakulti/kursus/CGPA (3.10–3.85)/negeri. Disahkan: `SELECT COUNT(*)` → 8 pelajar, 26 subjek, 8 projek akademik, 58 skill, 30 preference. Skrip **idempoten** (hapus id 1–8 dahulu sebelum insert) — diuji re-run dua kali, kekal 8 baris tanpa duplikat/ralat FK. **Belum ada:** seed untuk `companies`/`opportunities` demo (bukan skop tugasan ini).
   - **2026-11-27:** `config/app.php` dibina — baca `.env` (fungsi `interntrack_env_load()`), kira `APP_URL`/host/port anti-hardcode, dan kembalikan array config bersarang (`app`, `db`, `ai`, `academic`) merangkumi semua pembolehubah dalam `.env.example`. `index.php` disambung semula untuk guna `require config/app.php` — logik `.env` yang asalnya inline dalam `index.php` dibuang supaya tiada pertindihan. Disahkan: `php -l` kedua-dua fail lulus, `php index.php` (CLI) render HTML penuh tanpa ralat fatal. **PDO connector belum dibina** — `config/app.php` baru sediakan nilai `db.*`, belum ada kelas/fungsi sambungan DB sebenar.
-- **Milestone semasa:** Belum bermula secara rasmi (sebelum `v0.1.0`) — `index.php` ini baru placeholder/shell, bukan modul berfungsi. Database & seed data pelajar sudah wujud dan config sudah boleh dibaca, tapi belum ada sambungan DB (PDO) sebenar dalam kod.
+  - **2026-11-27:** Login page pertama (`login.php` + `logout.php`) dibina. **Keputusan seni bina (ditanya & disahkan pengguna):** satu admin/demo account via `.env` (`ADMIN_USERNAME`/`ADMIN_PASSWORD`, default `admin`/`admin` jika `.env` tiada — **mesti ditukar sebelum live/public**), bukan jadual `users` dan bukan pilih-profil-pelajar. Session PHP native, CSRF token pada borang, `hash_equals()` untuk perbandingan kredensial, `session_regenerate_id(true)` selepas login berjaya. `index.php` kini dilindungi (`session_start()` + guard redirect ke `login.php` jika `is_authenticated` kosong); navbar `index.php` papar nama pengguna + butang "Log Out". `config/app.php` tambah kunci `auth.admin_username`/`auth.admin_password`; `.env.example` tambah `ADMIN_USERNAME`/`ADMIN_PASSWORD`. **Diuji penuh via curl (Apache localhost, port 80):** kredensial salah → tetap di login (200) dengan mesej ralat; kredensial betul → 302 ke `index.php`; `index.php` dengan sesi sah → 200; `logout.php` → 302 + sesi dimusnahkan; `index.php` selepas logout → 302 kembali ke `login.php`. Semua lulus.
+- **Milestone semasa:** Belum bermula secara rasmi (sebelum `v0.1.0`) — `index.php` ini baru placeholder/shell, bukan modul berfungsi. Database, seed data pelajar, config dan log masuk/keluar asas sudah berfungsi, tapi belum ada sambungan DB (PDO) sebenar dalam kod dan belum ada modul produk sebenar.
 
 ## 2. Tugasan Selesai
 
@@ -35,14 +36,14 @@
 - [x] `database/schema.sql` ditulis & diimport → database `interntrack` wujud di MySQL localhost dengan 12 jadual (lihat Status Semasa).
 - [x] `database/seed_demo.sql` ditulis, diimport & diuji idempoten → 8 profil dummy pelajar UiTM lengkap dengan subjek/skill/projek/preferences (lihat Status Semasa).
 - [x] `config/app.php` dibina (config `.env` + app + db + ai + academic) dan disambungkan ke `index.php`.
+- [x] Login page pertama — `login.php` + `logout.php`, admin/demo account via `.env`, `index.php` dilindungi, diuji penuh via curl (lihat Status Semasa).
 
 ## 3. Tugasan Sedang Berjalan
 
-- Login page pertama sedang dibina (diminta pengguna semasa `config/app.php` dalam proses) — belum bermula lagi, lihat Seksyen 4.
+- Tiada. Belum di-commit/push lagi — sahkan `git status` pada sesi akan datang sebelum anggap selesai sepenuhnya.
 
 ## 4. Tugasan Belum Dilaksanakan (mengikut Addendum V3 Seksyen G — tugasan pertama)
 
-- [ ] Login page pertama (PDO connector + bentuk login + sesi) — **tugasan seterusnya**.
 - [ ] `INSTALL.md` rangka awal, `CHANGELOG.md`.
 - [ ] Isi placeholder pautan TikTok di `README.md`.
 - [ ] PDO connector (kelas/fungsi sambungan DB) guna nilai `config/app.php['db']`.
