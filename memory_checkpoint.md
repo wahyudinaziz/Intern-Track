@@ -20,8 +20,9 @@
   - **2026-11-27:** Layout `index.php` ditukar kepada **mobile-first** atas arahan terus pengguna (grid col-12→col-sm-6→col-lg-4, saiz hero h1 responsif via media query min-width, `body{min-width:960px}` dibuang). **Nota percanggahan:** spesifikasi Addendum V2-C menetapkan "Desktop-first web view" — keputusan mobile-first ini mengatasi spesifikasi atas arahan eksplisit pengguna, bukan salah faham. Jika modul lain (dashboard, jadual) dibina kemudian, sahkan dengan pengguna sama ada semuanya perlu mobile-first atau hanya landing page ini.
   - **2026-11-27:** Keseluruhan teks UI dalam `index.php` ditukar kepada **Bahasa Inggeris profesional** atas arahan pengguna (`lang="ms"` → `lang="en"`, tajuk/deskripsi 10 modul, teks hero, status alert, footer). Komen kod PHP (bukan UI) dikekalkan dalam Bahasa Melayu. **Keputusan seni bina:** semua UI teks tetap (modul, dashboard, borang) pada projek ini mesti ditulis dalam Bahasa Inggeris mulai sekarang — rujuk keputusan ini untuk sesi akan datang supaya konsisten.
   - **2026-11-27:** Tambah `LICENSE` (MIT, copyright Wahyudin Aziz), `.env.example` (APP_NAME/ENV/URL/HOST/PORT, DB_*, ANTHROPIC_API_KEY, AI_FEATURE_ENABLED, CGPA_SCALE_DEFAULT — serasi dengan parser `env_load()` dalam `index.php`), dan `README.md` (vision, 10 modul, tech stack, seksyen "Follow This Project — Built Live on TikTok" dengan jadual episod, roadmap versi v0.1.0→v1.0.0, lesen). **Nota:** pautan profil TikTok di README masih placeholder `<TODO: add TikTok profile URL>` — pengguna perlu isi URL sebenar sendiri (tidak direka).
-  - **2026-11-27:** Database MySQL `interntrack` dicipta di localhost (XAMPP, host `127.0.0.1`, user `root`, tiada kata laluan — padan `.env.example`). `database/schema.sql` ditulis & di-import; 12 jadual disahkan wujud via `SHOW TABLES`: `students`, `student_subjects`, `student_academic_projects`, `student_skills`, `student_preferences`, `companies`, `opportunities`, `opportunity_required_skills`, `matches` (7 lajur skor + label + status CGPA), `applications`, `application_timeline`, `reminders`. Semua guna InnoDB + utf8mb4 + foreign key. **Belum ada:** `database/seed_demo.sql` (profil dummy UiTM), `config/app.php`/PDO connector untuk aplikasi guna DB ini.
-- **Milestone semasa:** Belum bermula secara rasmi (sebelum `v0.1.0`) — `index.php` ini baru placeholder/shell, bukan modul berfungsi. Database sudah wujud tapi belum disambung ke mana-mana kod PHP.
+  - **2026-11-27:** Database MySQL `interntrack` dicipta di localhost (XAMPP, host `127.0.0.1`, user `root`, tiada kata laluan — padan `.env.example`). `database/schema.sql` ditulis & di-import; 12 jadual disahkan wujud via `SHOW TABLES`: `students`, `student_subjects`, `student_academic_projects`, `student_skills`, `student_preferences`, `companies`, `opportunities`, `opportunity_required_skills`, `matches` (7 lajur skor + label + status CGPA), `applications`, `application_timeline`, `reminders`. Semua guna InnoDB + utf8mb4 + foreign key.
+  - **2026-11-27:** `database/seed_demo.sql` ditulis & diimport — 8 profil dummy pelajar perempuan Melayu UiTM (Nur Aisyah Balqis, Siti Nur Damia, Nur Izzati Hanim, Nurul Syafiqah, Farah Nabilah, Aina Sofea, Nur Athirah, Maisarah Irdina) merentasi 8 kampus UiTM berbeza (Shah Alam, Pahang/Jengka, Perlis/Arau, Melaka/Alor Gajah, Terengganu/Dungun, Kelantan/Machang, Johor/Segamat, Sarawak/Samarahan), pelbagai fakulti/kursus/CGPA (3.10–3.85)/negeri. Disahkan: `SELECT COUNT(*)` → 8 pelajar, 26 subjek, 8 projek akademik, 58 skill, 30 preference. Skrip **idempoten** (hapus id 1–8 dahulu sebelum insert) — diuji re-run dua kali, kekal 8 baris tanpa duplikat/ralat FK. **Belum ada:** seed untuk `companies`/`opportunities` demo (bukan skop tugasan ini), `config/app.php`/PDO connector untuk aplikasi guna DB ini.
+- **Milestone semasa:** Belum bermula secara rasmi (sebelum `v0.1.0`) — `index.php` ini baru placeholder/shell, bukan modul berfungsi. Database & seed data pelajar sudah wujud tapi belum disambung ke mana-mana kod PHP.
 
 ## 2. Tugasan Selesai
 
@@ -31,10 +32,11 @@
 - [x] `git init` + `.gitignore` asas (`.env`, `/vendor/`, `/storage/logs/`, `/storage/cache/`, `/uploads/`) + commit pertama + push ke `https://github.com/wahyudinaziz/Intern-Track.git` (branch `main`).
 - [x] `LICENSE` (MIT) + `.env.example` + `README.md` (termasuk seksyen Built Live on TikTok & roadmap versi).
 - [x] `database/schema.sql` ditulis & diimport → database `interntrack` wujud di MySQL localhost dengan 12 jadual (lihat Status Semasa).
+- [x] `database/seed_demo.sql` ditulis, diimport & diuji idempoten → 8 profil dummy pelajar UiTM lengkap dengan subjek/skill/projek/preferences (lihat Status Semasa).
 
 ## 3. Tugasan Sedang Berjalan
 
-- Tiada. Database sudah dicipta & disahkan (`SHOW TABLES`). Belum di-commit ke git lagi — sahkan `git status` pada sesi akan datang sebelum anggap selesai sepenuhnya.
+- Tiada. Belum di-commit ke git lagi — sahkan `git status` pada sesi akan datang sebelum anggap selesai sepenuhnya.
 
 ## 4. Tugasan Belum Dilaksanakan (mengikut Addendum V3 Seksyen G — tugasan pertama)
 
@@ -42,7 +44,7 @@
 - [ ] Isi placeholder pautan TikTok di `README.md`.
 - [ ] `config/app.php` — baca `APP_URL`, `APP_PORT`, `DB_*` daripada `.env` (anti-hardcode port) + sediakan PDO connector supaya `index.php`/modul lain boleh guna DB `interntrack`.
 - [ ] Struktur folder penuh mengikut Seksyen 12 spesifikasi (`app/`, `data/`, `public/`, `uploads/`, `views/`, `api/`, `storage/`, `docs/`).
-- [ ] `database/seed_demo.sql` (8–12 profil dummy pelajar perempuan UiTM + syarikat/opportunity demo).
+- [ ] Seed `companies`/`opportunities` demo (jika diperlukan modul Direktori Syarikat/Internship Discovery kemudian).
 - [ ] Modul teras (10 modul, Seksyen 10) — belum bermula satu pun.
 - [ ] Taxonomy JSON files (`data/*.json`).
 
