@@ -17,8 +17,8 @@ if (!function_exists('interntrack_db')) {
             return $pdo;
         }
 
-        $config = require __DIR__ . '/app.php';
-        $db = $config['db'];
+        require_once __DIR__ . '/app.php';
+        $db = interntrack_config()['db'];
 
         $dsn = sprintf(
             'mysql:host=%s;port=%s;dbname=%s;charset=%s',

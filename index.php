@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 session_start();
 
-$config = require __DIR__ . '/config/app.php';
+$config = require_once __DIR__ . '/config/app.php';
 
 if (empty($_SESSION['is_authenticated'])) {
     header('Location: ' . $config['app']['base_path'] . '/login.php');
@@ -21,7 +21,7 @@ $appEnv     = $config['app']['env'];
 $appVersion = 'v0.1.0 — Project Shell';
 
 $modules = [
-    ['icon' => 'user-round',       'title' => 'Student Profile',       'desc' => 'Academic profile, skills & preferences with photo upload.'],
+    ['icon' => 'user-round',       'title' => 'Student Profile',       'desc' => 'Academic profile, skills & preferences with photo upload.', 'href' => 'views/profile/index.php'],
     ['icon' => 'layout-dashboard', 'title' => 'Dashboard',             'desc' => 'KPIs & Chart.js visualisations from live MySQL data.'],
     ['icon' => 'building-2',       'title' => 'Company Directory',     'desc' => 'Malaysian companies listed by industry and location.'],
     ['icon' => 'search',           'title' => 'Internship Discovery',  'desc' => 'Explore internship opportunities with honestly labelled data sources.'],
@@ -139,14 +139,16 @@ $modules = [
 
   <div class="row g-3 g-md-4">
     <?php foreach ($modules as $m): ?>
+    <?php $hasLink = !empty($m['href']); ?>
     <div class="col-12 col-sm-6 col-lg-4">
-      <div class="module-card p-4 h-100">
+      <<?= $hasLink ? 'a href="' . htmlspecialchars($appUrl . '/' . $m['href']) . '"' : 'div' ?> class="module-card p-4 h-100 d-block text-decoration-none text-reset<?= $hasLink ? '' : ' opacity-75' ?>">
         <div class="module-icon mb-3">
           <i data-lucide="<?= htmlspecialchars($m['icon']) ?>"></i>
         </div>
         <h3 class="h6 fw-semibold mb-1"><?= htmlspecialchars($m['title']) ?></h3>
         <p class="text-muted small mb-0"><?= htmlspecialchars($m['desc']) ?></p>
-      </div>
+        <?php if (!$hasLink): ?><span class="badge text-bg-light border mt-2 small">Coming soon</span><?php endif; ?>
+      </<?= $hasLink ? 'a' : 'div' ?>>
     </div>
     <?php endforeach; ?>
   </div>

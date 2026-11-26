@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 session_start();
 
-$config = require __DIR__ . '/config/app.php';
+$config = require_once __DIR__ . '/config/app.php';
 
 $_SESSION = [];
 session_destroy();
