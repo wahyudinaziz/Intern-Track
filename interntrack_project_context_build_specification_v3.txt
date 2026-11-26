@@ -1,0 +1,404 @@
+INTERNTRACK
+AI-POWERED MALAYSIA INTERNSHIP DISCOVERY & STUDENT MATCHING
+Project Context & Build Specification for Claude Code
+Version: 3.0 (Includes Addendum V2 & V3)
+Date: 21 November 2026
+Project mode: Localhost web application & Open Source Learning Project
+
+======================================================================
+1. PROJECT VISION
+======================================================================
+
+InternTrack is a Malaysia-focused internship discovery and personal
+application management web app for university and college students.
+
+The app helps a student:
+1. Build a structured academic and skills profile.
+2. Discover real Malaysian companies and relevant industry sectors.
+3. Explore internship opportunities where reliable public data is available.
+4. Match their course, study level, CGPA, skills, preferred location and
+   internship dates against opportunity requirements.
+5. Understand why an opportunity is a good or weak match.
+6. Compare available allowance/salary information when it is published.
+7. Track applications from saved opportunity through interview, offer,
+   rejection or withdrawal.
+8. Plan follow-ups and interview dates.
+
+Core product principle:
+InternTrack must remain useful even when external APIs or Claude API are
+unavailable. External data is an enhancement, not a hard dependency.
+
+The project is a localhost web application developed live using Claude Code
+and published as an Open Source Learning Project on GitHub from day one.
+
+======================================================================
+2. IMPORTANT DATA REALITY — READ BEFORE IMPLEMENTATION
+======================================================================
+
+There is currently no verified, comprehensive, official, unlimited,
+100%-free public API that provides all of the following for Malaysia:
+- Every registered Malaysian company.
+- Current internship vacancies from all employers.
+- Complete job descriptions and eligibility requirements.
+- Current internship allowance/salary for every role.
+- Company career URLs and verified HR contacts.
+
+Do not claim that any source provides a complete Malaysian company or
+internship database unless that is verified.
+
+Separate the data domains:
+
+A. COMPANY DIRECTORY
+Company identity, industry, location, website, public profile and source.
+
+B. INTERNSHIP OPPORTUNITIES
+A specific internship vacancy, role, requirements, location, closing date,
+internship duration, allowance and application URL.
+
+C. STUDENT PROFILE
+Academic course, qualification, semester, CGPA, skills, preferred sectors,
+location and internship availability.
+
+D. MATCHING RESULT
+A reasoned comparison between one student profile and one opportunity.
+
+A company directory record is NOT an internship vacancy.
+A company having a website does NOT mean it is currently hiring interns.
+An internship role with no published allowance must show "Not disclosed",
+not an invented salary.
+
+======================================================================
+3. 100% FREE / OPEN DATA SOURCES TO INVESTIGATE
+======================================================================
+
+Use sources with no paid subscription requirement. "Free" does not mean
+unlimited requests, guaranteed uptime, or unrestricted redistribution.
+Follow each source's licence, attribution and usage policy.
+
+3.1 MALAYSIA OFFICIAL OPEN API — data.gov.my
+Website: https://data.gov.my/
+API documentation: https://developer.data.gov.my/ | https://developer.data.gov.my/quickstart
+Base URL: https://api.data.gov.my
+Authentication: API token not required per quickstart; request limits apply.
+Implementation: Build adapter only after identifying a specific useful dataset. Save dataset ID, source URL, retrieval date and licence.
+
+3.2 OPENDOSM — OFFICIAL MALAYSIA OPEN DATA
+Documentation: https://developer.data.gov.my/static-api/opendosm.en
+API base: https://api.data.gov.my/opendosm
+Limit: Aggregate statistics only; do not derive individual company salaries.
+
+3.3 OPENSTREETMAP + OVERPASS API
+Licence: https://www.openstreetmap.org/copyright (ODbL)
+Overpass API: https://wiki.openstreetmap.org/wiki/Overpass_API
+Suggested use: Optional discovery/location enrichment source with caching, modest query sizes and configurable endpoint.
+
+3.4 WIKIDATA SPARQL QUERY SERVICE
+Documentation: https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/API
+Endpoint: https://query.wikidata.org/sparql
+Implementation: Narrow SPARQL queries imported into local seed data with source IDs and dates.
+
+3.5 MALAYSIA OPEN DATA PROJECT DIRECTORY
+Website: https://data.stratum.my/ | API: https://data.stratum.my/api
+Note: Directory of datasets; verify original publisher licence.
+
+3.6 BURSA MALAYSIA
+Website: https://www.bursamalaysia.com/
+Note: Manually curate a small set of public-listed company records with source URLs; avoid undocumented endpoints.
+
+3.7 SSM / COMPANY REGISTRATION DATA
+Official portal: https://www.ssm.com.my/
+Note: Verification destination/reference only; do not scrape or redistribute paid company info.
+
+======================================================================
+4. INTERNSHIP VACANCY SOURCES — REALISTIC APPROACH
+======================================================================
+
+MYFutureJobs: https://www.myfuturejobs.gov.my/
+
+Rules:
+- Do not scrape JobStreet, LinkedIn, Indeed, Hiredly or other portals unless permitted.
+- Do not reverse engineer private endpoints or bypass access controls.
+- Do not copy job descriptions wholesale without permission.
+- Provide an external link-out workflow for students to manually add real URLs.
+
+Recommended MVP vacancy strategy:
+1. Seed 20-40 clearly labelled sample opportunities for demo only.
+2. Allow students to manually add a real opportunity URL.
+3. Keep company directory separate.
+4. Clearly label records as "Demo", "Manually added", "Public source" or "Employer feed".
+
+======================================================================
+5. ALLOWANCE / SALARY DATA STRATEGY
+======================================================================
+
+Store salary/allowance as:
+- amount_min, amount_max, currency (MYR)
+- pay_period (monthly / daily / hourly / one_off / unknown)
+- allowance_type (paid / unpaid / not_disclosed / negotiable)
+- salary_source_url, salary_last_verified_at, salary_confidence (high / medium / low)
+
+Rules:
+- If no amount is published, show "Not disclosed".
+- Never infer an employer's allowance from industry averages or let Claude invent figures.
+
+======================================================================
+6. STUDENT PROFILE — INPUTS AND DATA MODEL
+======================================================================
+
+Personal / education: display_name, institution_name, qualification_level, faculty, course_name, course_code, study_year, current_semester, expected_graduation_date, internship_start_date, internship_end_date, internship_duration_weeks.
+Academic: current_cgpa, cgpa_scale (configurable, default 4.00), latest_semester_gpa, relevant_subjects[], academic_projects[].
+Skills: technical_skills[], software_tools[], soft_skills[], languages[], portfolio_url, github_url, linkedin_url.
+Preferences: preferred_industries[], preferred_job_roles[], preferred_states[], preferred_work_mode, minimum_allowance, willing_to_relocate, transport_availability, preferred_company_size.
+
+Privacy:
+- Use fictional profiles for live demos.
+- Do not request IC numbers, home addresses or student login credentials.
+- Anonymise profile payloads before sending to Claude API.
+
+======================================================================
+7. COURSE-TO-INDUSTRY MAPPING
+======================================================================
+
+Maintain editable local taxonomy tables/files:
+- course_taxonomy.json
+- industry_taxonomy.json
+- role_taxonomy.json
+- skill_taxonomy.json
+- course_industry_map.json
+
+======================================================================
+8. MATCHING ENGINE — HYBRID, NOT AI-ONLY
+======================================================================
+
+Deterministic scoring engine (Total 100 points):
+1. Course / discipline relevance: 30 points
+2. Skills match: 20 points
+3. Academic eligibility / CGPA: 15 points
+4. Industry preference match: 10 points
+5. Location / work mode match: 10 points
+6. Internship date and duration compatibility: 10 points
+7. Allowance preference compatibility: 5 points
+
+Labels:
+- 85-100: Excellent match
+- 70-84: Strong match
+- 55-69: Potential match
+- 40-54: Low match
+- 0-39: Weak match
+
+Rules:
+- Explicit CGPA requirements are checked deterministically; if unmet, label "Does not meet stated CGPA requirement".
+- Unstated CGPA requirements are marked "Not specified" (no penalty).
+- Missing salary is neutral; missing dates lower confidence without fabricating compatibility.
+
+======================================================================
+9. CLAUDE API — ROLE AND SAFE INTEGRATION
+======================================================================
+
+Use Claude (via PHP backend only) for:
+- Explaining match reasoning, summarising JDs, identifying skill gaps, suggesting prep checklists and drafting polite application emails.
+
+Do NOT use Claude for:
+- Generating real company records, live vacancies, verified salaries or overriding deterministic eligibility rules.
+
+Security:
+- Store ANTHROPIC_API_KEY in `.env` (excluded from Git).
+- Provide manual "Analyse with AI" trigger, server-side JSON validation, timeouts, session rate limits and response caching.
+
+======================================================================
+10. CORE APPLICATION MODULES
+======================================================================
+
+1. Onboarding / Student Profile (CRUD + Photo Upload)
+2. Dashboard (KPIs & Chart.js visualisations)
+3. Company Directory
+4. Internship Discovery
+5. AI Match Results
+6. My Applications (Pipeline tracking)
+7. Application Detail & Timeline
+8. Calendar / Reminders
+9. Resume / CV Builder (Auto-populate, photo/no-photo templates, PDF export)
+10. Settings / Data (Export/Import JSON, AI toggle, Demo reset)
+
+======================================================================
+11. LOCALHOST TECHNICAL ARCHITECTURE
+======================================================================
+
+- PHP 8+ (plain/native PHP; no Laravel or heavy frameworks)
+- MySQL / MariaDB via XAMPP (PDO prepared statements)
+- Bootstrap 5.3.3 + Custom CSS
+- Vanilla JavaScript, AJAX/fetch, SweetAlert2
+- Chart.js & Lucide icons
+- Configurable Base URL and Port via `.env` (no hardcoded localhost ports)
+
+======================================================================
+12. REPOSITORY & PROJECT FOLDER STRUCTURE
+======================================================================
+
+interntrack/
+|-- .env.example
+|-- .gitignore
+|-- LICENSE                 (MIT License)
+|-- README.md
+|-- INSTALL.md
+|-- CHANGELOG.md
+|-- index.php
+|-- .htaccess
+|
+|-- config/
+|   |-- app.php
+|   |-- database.php
+|
+|-- app/
+|   |-- Controllers/
+|   |-- Services/
+|   |   |-- MatchingService.php
+|   |   |-- ClaudeService.php
+|   |   |-- CompanyDirectoryService.php
+|   |   |-- OpportunityService.php
+|   |   |-- ResumeService.php
+|   |   |-- DataSource/
+|   |-- Helpers/
+|   |-- Validators/
+|
+|-- database/
+|   |-- schema.sql
+|   |-- seed_demo.sql
+|
+|-- data/
+|   |-- course_taxonomy.json
+|   |-- industry_taxonomy.json
+|   |-- role_taxonomy.json
+|   |-- skill_taxonomy.json
+|   |-- course_industry_map.json
+|
+|-- public/
+|   |-- assets/
+|   |   |-- css/
+|   |   |-- js/
+|   |   |-- images/
+|
+|-- uploads/
+|   |-- profiles/           (With .htaccess blocking PHP execution)
+|
+|-- views/
+|   |-- layouts/
+|   |-- dashboard/
+|   |-- profile/
+|   |-- companies/
+|   |-- opportunities/
+|   |-- matching/
+|   |-- applications/
+|   |-- resume/
+|   |-- settings/
+|
+|-- api/
+|   |-- profile.php
+|   |-- companies.php
+|   |-- opportunities.php
+|   |-- match.php
+|   |-- ai-analysis.php
+|
+|-- storage/
+|   |-- cache/
+|   |-- logs/
+|
+|-- docs/
+|   |-- DEVELOPMENT_LOG.md
+|   |-- DATA_SOURCES.md
+|   |-- MATCHING_RULES.md
+|   |-- PRIVACY.md
+
+======================================================================
+ADDENDUM V2 — PEMBETULAN SKOP PRODUK, LIVE DEVELOPMENT DAN UI
+Tarikh: 21 November 2026
+====================================================================
+
+A. DUA TUJUAN UTAMA PROJEK
+1. PRODUCT GOAL: Web app membantu pelajar IPT Malaysia mengurus profil akademik, mencari syarikat/peluang internship, memahami padanan AI, menjejak permohonan, melihat analitik dan menjana resume/CV secara automatik.
+2. LIVE DEVELOPMENT / CONTENT GOAL: Dibangunkan secara LIVE melalui TikTok Live Studio dari folder kosong hingga sistem berfungsi penuh.
+
+B. PLATFORM DAN ENVIRONMENT
+- PHP native + MySQL/MariaDB melalui XAMPP (Windows), PDO, Bootstrap 5.3.3, Custom CSS, Vanilla JS, AJAX/fetch, SweetAlert2, Chart.js.
+- MySQL ialah sumber data utama (bukan LocalStorage).
+- Akses melalui 127.0.0.1 dengan PORT KHAS yang dikonfigurasi melalui `.env` (jangan hardcode port).
+
+C. DESKTOP-FIRST WEB VIEW
+- Reka bentuk desktop/laptop-first (sidebar, topbar, ruang luas untuk jadual dan carta), sambil kekal responsive pada skrin kecil.
+
+D. DUMMY STUDENT PROFILES — UITM
+- Sediakan 8–12 profil dummy sintetik pelajar perempuan Melayu UiTM (contoh: Nur Aisyah Balqis, Siti Nur Damia, Nur Izzati Hanim, Nurul Syafiqah, Farah Nabilah, Aina Sofea, Nur Athirah, Maisarah Irdina) merentasi pelbagai kursus, kampus, CGPA, subjek, skills dan negeri.
+
+E. STUDENT PROFILE MANAGEMENT & PHOTO UPLOAD
+- View, edit, save maklumat asas, akademik, internship, subjek, skills, portfolio dan preferences.
+- Upload gambar profil (JPG/JPEG/PNG/WEBP, semakan MIME `finfo`, nama fail rawak, folder `uploads/` dilindungi daripada PHP execution).
+
+F. DASHBOARD, MATCHING & RESUME BUILDER
+- Dashboard dinamik daripada MySQL dengan KPI cards dan Chart.js.
+- Matching engine deterministik + penjelasan Claude API.
+- Resume/CV Builder auto-populate daripada profil, pilihan template bergambar atau tanpa gambar, dan export PDF.
+
+G. LIVE STREAM SAFETY
+- Jangan dedahkan `.env`, API key, credentials atau data peribadi semasa live. Gunakan profil dummy sahaja.
+
+====================================================================
+ADDENDUM V3 — OPEN SOURCE LEARNING PROJECT, GITHUB WORKFLOW & BUILD IN PUBLIC
+Tarikh: 21 November 2026
+====================================================================
+
+A. KONSEP OPEN SOURCE LEARNING PROJECT (DAY ONE)
+InternTrack bukan sekadar projek demo tertutup, tetapi dibina sebagai **Open Source Learning Project** di GitHub sejak hari pertama (`Public Repository`).
+Matlamat utama:
+1. Mempamerkan sejarah pembangunan perisian sebenar dari commit pertama hingga versi akhir.
+2. Menjadi bahan rujukan pembelajaran PHP native, MySQL, Bootstrap, JavaScript dan integrasi AI kepada pelajar IPT dan penonton TikTok Live.
+3. Membolehkan penonton clone repository, memasang sistem di laptop sendiri (XAMPP), melaporkan isu (GitHub Issues) dan menyumbang kod.
+
+B. LESEN SOURCE CODE
+- Gunakan **MIT License** dalam fail `LICENSE` di root repository supaya projek bebas digunakan, diubah suai dan diedarkan semula untuk tujuan pembelajaran dengan mengekalkan notis hak cipta.
+
+C. KONFIGURASI PORT & BASE URL DINAMIK (ANTI-HARDCODE)
+- JANGAN hardcode port localhost pembangunan (seperti `:8080` atau `:8012`) atau laluan folder tetap di dalam kod PHP, JavaScript atau SQL.
+- Semua tetapan persekitaran mesti dibaca daripada fail `.env` (menggunakan helper konfigurasi PHP yang ringan) dengan nilai fallback automatik berdasarkan `$_SERVER['HTTP_HOST']` dan `SCRIPT_NAME`.
+- Sediakan `.env.example` yang lengkap dengan placeholder supaya pengguna lain boleh menjalankan aplikasi pada port Apache lalai (`80`) atau mana-mana port pilihan mereka tanpa perlu mengubah kod sumber.
+
+D. GIT WORKFLOW & RELEASE MANAGEMENT
+Claude Code mesti menyokong aliran kerja Git dan GitHub berikut sepanjang pembangunan:
+1. **Commit Berstruktur Setiap Milestone:** Gunakan format Conventional Commits (contoh: `chore: init project structure`, `feat: add database schema and UiTM dummy seed`, `feat: add student profile and photo upload`, `docs: update installation guide`).
+2. **Pengurusan `.gitignore`:** Pastikan `.env`, fail konfigurasi sensitif, fail dalam `storage/logs/`, `storage/cache/`, serta gambar yang dimuat naik pengguna dalam `uploads/` (kecuali `.gitkeep` dan placeholder rasmi) diabaikan oleh Git.
+3. **Semakan Keselamatan Pra-Commit:** Sebelum sebarang push atau release, pastikan tiada API key Claude, kata laluan database, maklumat peribadi sebenar atau aset berlesen tertutup dimasukkan ke dalam repository.
+4. **Semantic Versioning & GitHub Releases:**
+   - `v0.1.0`: Project Shell, Database Schema, Seed Data & Dashboard asas.
+   - `v0.2.0`: Student Profile Management & Photo Upload.
+   - `v0.3.0`: Company Directory & Internship Discovery.
+   - `v0.5.0`: Deterministic Matching Engine & Claude AI Analysis.
+   - `v0.8.0`: Resume/CV Builder & Application Tracker.
+   - `v1.0.0`: Final Release lengkap dengan pakej ZIP source code, SQL schema + seed bersih, dan panduan pemasangan XAMPP yang telah diuji.
+
+E. DOKUMENTASI WAJIB REPOSITORY
+Claude Code mesti menjana dan mengemas kini fail-fail dokumentasi berikut selari dengan kemajuan kod:
+1. **`README.md`:**
+   - Pengenalan projek, ciri-ciri utama, teknologi yang digunakan dan tangkapan skrin (screenshot).
+   - Seksyen khas **"Follow This Project — Built Live on TikTok"** (Build in Public: TikTok Live -> GitHub -> Download -> Install -> Learn) yang mengandungi pautan profil TikTok, jadual/senarai episod live, tarikh pembangunan dan status milestone.
+2. **`INSTALL.md`:**
+   - Panduan pemasangan langkah demi langkah khusus untuk pengguna **Windows + XAMPP** (cara clone/extract ke `htdocs`, konfigurasi `.env` daripada `.env.example`, import `database/schema.sql` & `database/seed_demo.sql` melalui phpMyAdmin, tetapan port Apache, dan cara mendapatkan/mengaktifkan Claude API key secara pilihan).
+3. **`CHANGELOG.md`:**
+   - Rekod perubahan bagi setiap versi release (`v0.1.0` hingga `v1.0.0`).
+4. **`docs/DEVELOPMENT_LOG.md`:**
+   - Log terperinci setiap sesi TikTok Live (objektif, apa yang dibina, isu yang diselesaikan dan tugasan sesi seterusnya).
+
+F. UJIAN PEMASANGAN BERSIH (CLEAN INSTALL VERIFICATION)
+- Sebelum menandakan mana-mana milestone utama atau release sebagai selesai, kod mesti diuji menggunakan simulasi pemasangan bersih (folder baharu dan pangkalan data MySQL kosong menggunakan `schema.sql` + `seed_demo.sql`) bagi memastikan tiada ralat laluan fail (path), ralat port atau kebergantungan tersembunyi yang hanya wujud pada komputer pembangun asal.
+
+G. KEMAS KINI TUGAS PERTAMA CLAUDE CODE
+Sebagai tambahan kepada arahan dalam Addendum V2, pada sesi pertama (LIVE 01), Claude Code juga perlu:
+1. Menyediakan struktur asas Git repository (`.gitignore`, `LICENSE` MIT, `.env.example`, `README.md` awal dengan seksyen *Follow This Project — Built Live on TikTok*, `INSTALL.md` rangka awal, dan `CHANGELOG.md`).
+2. Memastikan seni bina konfigurasi `config/app.php` membaca `APP_URL`, `APP_PORT` dan `DB_*` daripada `.env` supaya aplikasi mudah alih (portable) untuk semua penonton yang memuat turun dari GitHub.
+
+====================================================================
+TAMAT DOKUMEN V3
+====================================================================
+```
+
+Dokumentasi telah dikemas kini dengan menggabungkan keseluruhan spesifikasi asal, Addendum V2, dan **Addendum V3** yang merangkumi struktur repository terbuka, lesen MIT, konfigurasi port/URL dinamik tanpa hardcode, aliran kerja Git & Release (`v0.1.0` hingga `v1.0.0`), ujian *clean install*, serta seksyen *Build in Public* dalam `README.md`.
+
+Adakah anda ingin saya bantu sediakan templat awal bagi fail `README.md` (termasuk seksyen *Built Live on TikTok*) atau `INSTALL.md` untuk memulakan repository GitHub anda?
