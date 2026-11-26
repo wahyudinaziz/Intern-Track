@@ -32,7 +32,7 @@
 
 ## 3. Tugasan Sedang Berjalan
 
-- Commit & push `LICENSE`, `.env.example`, `README.md` ke GitHub (lihat git status sebelum anggap selesai).
+- Tiada. Commit `b023a7e` ("docs: add MIT LICENSE, .env.example and README") sudah di-push ke `main`.
 
 ## 4. Tugasan Belum Dilaksanakan (mengikut Addendum V3 Seksyen G — tugasan pertama)
 
